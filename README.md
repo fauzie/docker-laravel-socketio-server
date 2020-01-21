@@ -11,7 +11,7 @@ Ready to use [Laravel Echo Server](https://github.com/tlaverdure/laravel-echo-se
 | `DATABASE`       | `sqlite`   | Database used to store data that should persist. `redis` or `sqlite` |
 
 You can also use laravel echo server dotenv configuration for initial setup.
-Just map your env file as volume to /app/.env. See: `app/.env.example`
+Just map your env file as volume to /app/.env. See: [`app/.env.example`](https://github.com/fauzie/docker-laravel-socketio-server/blob/master/app/.env.example)
 
 ```bash
 -v /home/username/.env:/app/.env
