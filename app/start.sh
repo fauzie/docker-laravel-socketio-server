@@ -22,11 +22,12 @@ if [[ ! -f "laravel-echo-server.json" ]]; then
 	CLIENT_APP_KEY=${CLIENT_APP_KEY:-$RAND_CLIENT_KEY}
 
 	DATABASE=${DATABASE:-sqlite}
+	LARAVEL_ECHO_SERVER_REDIS_HOST=${LARAVEL_ECHO_SERVER_REDIS_HOST:-}
 
-	if [[ -z "${LARAVEL_ECHO_SERVER_REDIS_HOST}" && "${LARAVEL_ECHO_SERVER_REDIS_HOST}" != "" ]]; then
+	if [[ "${LARAVEL_ECHO_SERVER_REDIS_HOST}" != "" ]]; then
 		DATABASE=redis
 	    LARAVEL_ECHO_SERVER_REDIS_PORT=${LARAVEL_ECHO_SERVER_REDIS_PORT:-6379}
-	    DATABASE_CMD="del(.databaseConfig.sqlite) | .databaseConfig.redis.host=\"${LARAVEL_ECHO_SERVER_REDIS_HOST}\" | .databaseConfig.redis.port=${LARAVEL_ECHO_SERVER_REDIS_PORT}"
+	    DATABASE_CMD="del(.databaseConfig.sqlite) | .databaseConfig.redis.host=\"${LARAVEL_ECHO_SERVER_REDIS_HOST}\" | .databaseConfig.redis.port=${LARAVEL_ECHO_SERVER_REDIS_PORT} | .subscribers.redis=true"
 		if [[ -n "${LARAVEL_ECHO_SERVER_REDIS_PASSWORD}" ]]; then
 			DATABASE_CMD="${DATABASE_CMD} | .databaseConfig.redis.options.password=\"${LARAVEL_ECHO_SERVER_REDIS_PASSWORD}\""
 		fi
@@ -53,7 +54,7 @@ if [[ ! -f "laravel-echo-server.json" ]]; then
 	jq -r ".authHost=\"$LARAVEL_ECHO_SERVER_AUTH_HOST\" | .authEndpoint=\"$LARAVEL_ECHO_AUTH_ENDPOINT\" |
 	.clients[0].appId=\"$CLIENT_APP_ID\" | .clients[0].key=\"$CLIENT_APP_KEY\" |
 	.database=\"$DATABASE\" | $DATABASE_CMD |
-	.devMode=$LARAVEL_ECHO_SERVER_DEBUG | .host=\"$LARAVEL_ECHO_SERVER_HOST\" | .port=\"$LARAVEL_ECHO_SERVER_PORT\" | .protocol=\"$LARAVEL_ECHO_SERVER_PROTO\" |
+	.devMode=$LARAVEL_ECHO_SERVER_DEBUG | .host=\"$LARAVEL_ECHO_SERVER_HOST\" | .port=$LARAVEL_ECHO_SERVER_PORT | .protocol=\"$LARAVEL_ECHO_SERVER_PROTO\" |
 	.sslCertPath=\"$LARAVEL_ECHO_SERVER_SSL_CERT\" | .sslKeyPath=\"$LARAVEL_ECHO_SERVER_SSL_KEY\" | .sslCertChainPath=\"$LARAVEL_ECHO_SERVER_SSL_CHAIN\" |
 	.apiOriginAllow.allowOrigin=\"$LARAVEL_ECHO_ALLOW_ORIGIN\"" json.tmpl > laravel-echo-server.json
 
@@ -62,6 +63,8 @@ if [[ ! -f "laravel-echo-server.json" ]]; then
 	echo "                CONFIGURATION DETAILS"
 	echo "======================================================="
 	echo " "
+	echo " Host    : ${LARAVEL_ECHO_SERVER_HOST}"
+	echo " Port    : ${LARAVEL_ECHO_SERVER_PORT}"
 	echo " App ID  : ${CLIENT_APP_ID}"
 	echo " App Key : ${CLIENT_APP_KEY}"
 	echo " Auth    : ${LARAVEL_ECHO_SERVER_AUTH_HOST}${LARAVEL_ECHO_AUTH_ENDPOINT}"
@@ -77,8 +80,8 @@ if [[ "$LARAVEL_ECHO_SERVER_DEBUG" == true ]]; then
 fi
 
 # Start the server
-if lsof -Pi :6001 -sTCP:LISTEN -t >/dev/null; then
-	exec "$@"
-else
+if [[ ! -f "laravel-echo-server.lock" ]]; then
 	laravel-echo-server start
 fi
+
+exec "$@"

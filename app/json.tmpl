@@ -9,22 +9,22 @@
 	],
 	"database": "DATABASE",
 	"databaseConfig": {
-        "redis" : {
-            "port": "LARAVEL_ECHO_SERVER_REDIS_PORT",
-            "host": "LARAVEL_ECHO_SERVER_REDIS_HOST"
-        },
+		"redis" : {
+		    "port": "LARAVEL_ECHO_SERVER_REDIS_PORT",
+		    "host": "LARAVEL_ECHO_SERVER_REDIS_HOST"
+		},
 		"sqlite": {
 			"databasePath": "/app/server.sqlite"
 		}
 	},
-	"devMode": "LARAVEL_ECHO_SERVER_DEBUG",
-	"host": "LARAVEL_ECHO_SERVER_HOST",
-	"port": "LARAVEL_ECHO_SERVER_PORT",
-	"protocol": "LARAVEL_ECHO_SERVER_PROTO",
+	"devMode": true,
+	"host": "0.0.0.0",
+	"port": 6001,
+	"protocol": "http",
 	"socketio": {
-        "cookie": false,
-        "cookiePath": false
-    },
+		"cookie": false,
+		"cookiePath": false
+	},
 	"secureOptions": 67108864,
 	"sslCertPath": "LARAVEL_ECHO_SERVER_SSL_CERT",
 	"sslKeyPath": "LARAVEL_ECHO_SERVER_SSL_KEY",
@@ -32,11 +32,11 @@
 	"sslPassphrase": "",
 	"subscribers": {
 		"http": true,
-		"redis": true
+		"redis": false
 	},
 	"apiOriginAllow": {
 		"allowCors": true,
-		"allowOrigin": "ALLOW_ORIGIN",
+		"allowOrigin": "*",
 		"allowMethods": "GET, POST",
 		"allowHeaders": "Origin, Content-Type, X-Auth-Token, X-Requested-With, Accept, Authorization, X-CSRF-TOKEN, X-Socket-Id"
 	}
