@@ -1,0 +1,5 @@
+app/laravel-echo-server.json
+app/server.sqlite
+app/temp*
+app/tmp*
+app/.env
