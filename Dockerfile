@@ -11,4 +11,4 @@ COPY    app /app
 
 EXPOSE  6001
 
-CMD     /app/start.sh
+ENTRYPOINT /app/start.sh
