@@ -80,8 +80,9 @@ if [[ "$LARAVEL_ECHO_SERVER_DEBUG" == true ]]; then
 fi
 
 # Start the server
-if [[ ! -f "laravel-echo-server.lock" ]]; then
-	laravel-echo-server start
+if [[ -f "laravel-echo-server.lock" ]]; then
+	rm laravel-echo-server.lock
 fi
+laravel-echo-server start
 
 exec "$@"
